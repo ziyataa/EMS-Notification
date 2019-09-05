@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "94871647343",
+    "firebase_url": "https://ems-notification.firebaseio.com",
+    "project_id": "ems-notification",
+    "storage_bucket": "ems-notification.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:94871647343:android:3eb3f7dae5ea5474",
+        "android_client_info": {
+          "package_name": "com.blogspot.yourfavoritekaisar.ems_notification"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "94871647343-c90t8a1ncjgv5gimtaj90un965nvkir1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.blogspot.yourfavoritekaisar.ems_notification",
+            "certificate_hash": "d064001e414b389ae53a196b7b9c8cbf59d92124"
+          }
+        },
+        {
+          "client_id": "94871647343-mtvkr6cu1re390e2jdj98dvpispc9ts0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCwM3lu9WovgStUeHBA_wx1YZi3JXxo2qM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "94871647343-mtvkr6cu1re390e2jdj98dvpispc9ts0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
