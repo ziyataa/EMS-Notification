@@ -1,18 +1,30 @@
 package com.blogspot.yourfavoritekaisar.ems_notification;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.text.format.DateFormat;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.MenuItem;
-import android.widget.Toast;
-
 import com.firebase.ui.auth.AuthUI;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.firebase.ui.database.FirebaseListAdapter;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.Objects;
+
+import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -22,6 +34,28 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
+
+        FloatingActionButton fab =
+                findViewById(R.id.fab);
+
+        fab.setOnClickListener(view -> {
+            EditText input = findViewById(R.id.input);
+
+            // Read the input field and push a new instance
+            // of ChatMessage to the Firebase database
+            FirebaseDatabase.getInstance()
+                    .getReference()
+                    .push()
+                    .setValue(new ChatMessenger(input.getText().toString(),
+                            Objects.requireNonNull(FirebaseAuth.getInstance()
+                                    .getCurrentUser())
+                                    .getDisplayName())
+                    );
+
+            // Clear the input
+            input.setText("");
+        });
 
         if (FirebaseAuth.getInstance().getCurrentUser() == null) {
             startActivityForResult(
@@ -45,7 +79,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void displayChatMessages() {
+        ListView listOfMessages = findViewById(R.id.list_of_messages);
 
+        FirebaseListAdapter<ChatMessenger> adapter = new FirebaseListAdapter<ChatMessenger>(this, ChatMessenger.class,
+                R.layout.message, FirebaseDatabase.getInstance().getReference()) {
+            @Override
+            protected void populateView(View v, ChatMessenger model, int position) {
+                TextView messageText = v.findViewById(R.id.message_user);
+                TextView messageUser = v.findViewById(R.id.message_user);
+                TextView messageTime = v.findViewById(R.id.message_user);
+
+                messageText.setText(model.getMessageText());
+                messageUser.setText(model.getMessageUser());
+
+                messageTime.setText(DateFormat.format("dd-MM-yyyy (HH:mm:ss)",
+                        model.getMessageTime()));
+            }
+        };
+
+        listOfMessages.setAdapter(adapter);
     }
 
     @Override
@@ -69,18 +121,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.menu_sign_out) {
             AuthUI.getInstance().signOut(this)
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            Toast.makeText(MainActivity.this, "You Have Been Signed Out",
-                                    Toast.LENGTH_SHORT).
-                                    show();
+                    .addOnCompleteListener(task -> {
+                        Toast.makeText(MainActivity.this, "You Have Been Signed Out",
+                                Toast.LENGTH_SHORT).
+                                show();
 
-                            finish();
-                        }
+                        finish();
                     });
 
         }
